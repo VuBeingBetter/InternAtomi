@@ -9,7 +9,7 @@ bin/
 .settings/
 
 # Database configuration (IMPORTANT)
-.src/database.properties
+src/database.properties
 
 # External libraries (User should download or use build tools)
 lib/mysql-connector-j-9.6.0.jar
