@@ -102,6 +102,12 @@ public class App {
                     // Delete a client account
                     System.out.print("[ADMIN] Enter client username to delete: ");
                     String deleteUsername = scanner.nextLine();
+                    System.out.print("Are you sure you want to delete client " + deleteUsername + "? (Y/n):");
+                    String confirm = scanner.nextLine();
+                    if (!confirm.equalsIgnoreCase("Y")) {
+                        System.out.println("[ADMIN] Client deletion cancelled.");
+                        break;
+                    }
                     admin.deleteClient(deleteUsername);
                     break;
                 case 4:

@@ -68,16 +68,17 @@ public class AdminDAO extends UserDAO {
         return clients;
     }
 
-    public void deleteClient(String clientUsername) {
+    public boolean deleteClientByUsername(String clientUsername) {
         String sql = "DELETE FROM users WHERE username = ? AND role = 'CLIENT'";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, clientUsername);
-            pstmt.executeUpdate();
+            return pstmt.executeUpdate() > 0;
             
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
+            return false;
         }
     }
 

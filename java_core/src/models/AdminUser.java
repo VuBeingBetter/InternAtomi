@@ -46,9 +46,14 @@ public class AdminUser extends User {
         adminDAO.updateSpecificField(clientUsername, field, newValue);
     }
 
-    public void deleteClient(String clientUsername) {
-        adminDAO.deleteClient(clientUsername);
-        System.out.println(String.format("Client %s deleted successfully.", clientUsername));
+    public boolean deleteClient(String clientUsername) {
+        boolean isDeleted = adminDAO.deleteClientByUsername(clientUsername);
+        if (isDeleted) {
+            System.out.println(String.format("Client %s deleted successfully.", clientUsername));
+        } else {
+            System.out.println(String.format("Failed to delete client %s.", clientUsername));
+        }
+        return isDeleted;
     }
 
     
