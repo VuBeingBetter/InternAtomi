@@ -67,7 +67,7 @@ public abstract class User {
         return lastName;
     }
 
-    public String get_id() {
+    public String getId() {
         return _id;
     }
 

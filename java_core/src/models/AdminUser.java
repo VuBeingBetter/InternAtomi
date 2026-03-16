@@ -3,9 +3,10 @@ package models;
 import java.util.List;
 
 import dao.AdminDAO;
+import dao.implement.AdminDAOImpl;
 
 public class AdminUser extends User {
-    private AdminDAO adminDAO = new AdminDAO();
+    private AdminDAO adminDAO = new AdminDAOImpl();
 
     public AdminUser(String username, String password, String firstName, String lastName) {
         super(username, password, firstName, lastName, UserRole.ADMIN);
@@ -39,9 +40,14 @@ public class AdminUser extends User {
     public void updateClientField(String clientUsername, UpdateField field, String newValue) {
         // Password must satisfy the requirement:
         // - At least 8 characters
-        if (field == UpdateField.PASSWORD && (newValue == null || newValue.length() < 8)) {
-            System.out.println("Password must be at least 8 characters long.");
-            return;
+        if (field == UpdateField.PASSWORD) {
+            if (newValue == null || newValue.isEmpty()) {
+                System.out.println("Password cannot be empty.");
+                return;
+            } else if (newValue.length() < 8) {
+                System.out.println("Password must be at least 8 characters long.");
+                return;
+            }
         }
         adminDAO.updateSpecificField(clientUsername, field, newValue);
     }
