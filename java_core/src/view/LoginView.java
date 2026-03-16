@@ -15,5 +15,5 @@ public class LoginView {
 
         return new AbstractMap.SimpleEntry<>(username, password);
     }
-
+    
 }

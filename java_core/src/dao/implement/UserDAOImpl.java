@@ -11,6 +11,7 @@ import models.ClientUser;
 import models.UpdateField;
 import models.User;
 import models.UserRole;
+import util.ConsoleUtil;
 
 public class UserDAOImpl implements UserDAO {
 
@@ -121,6 +122,9 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User login (String username, String password) {
         // TODO: code to handle user login
+        // SHA256 Encoding
+        password = ConsoleUtil.sha256Encoding(password);
+        
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -152,9 +156,4 @@ public class UserDAOImpl implements UserDAO {
         return null;
     }
 
-    @Override
-    public void register(User user) {
-        // TODO: code to handle user registration
-        
-    }
 }

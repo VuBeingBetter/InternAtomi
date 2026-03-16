@@ -4,6 +4,7 @@ import models.UserRole;
 import util.ConsoleUtil;
 import view.AdminLoginView;
 import view.ClientLoginView;
+import view.ClientRegisterView;
 
 public class App {
     private static Scanner scanner = new Scanner(System.in);
@@ -29,7 +30,7 @@ public class App {
                 handleLogin(UserRole.CLIENT);
             }
             else if (choice == 3) {
-                System.out.println("[SYSTEM] Under development...");
+                handleClientRegister(UserRole.CLIENT);
             }
             else if (choice == 0) {
                 System.out.println("[SYSTEM] Exiting...");
@@ -53,4 +54,13 @@ public class App {
         }
     }
 
+    private static void handleClientRegister(UserRole role) {
+        if (role != UserRole.CLIENT) {
+            System.out.println("[SYSTEM] Can only register as a client.");
+            return;
+        }
+
+        ClientRegisterView registerView = new ClientRegisterView();
+        registerView.displayClientRegisterView();
+    }
 }

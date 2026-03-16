@@ -34,95 +34,22 @@ public class AdminView {
 
             switch (choice) {
                 case 1:
-                    // View all client accounts
-                    List<ClientUser> clients = admin.getAllClients();
-                    if (clients != null) {
-                        clients.forEach(System.out::println);
-                    } else {
-                        System.out.println("No clients found.");
-                    }
+                    viewAllClients();
                     ConsoleUtil.enter();
                     break;
 
                 case 2:
-                    // Create a new client account
-                    System.out.print("[ADMIN] Enter client username: ");
-                    String clientUsername = scanner.nextLine();
-                    System.out.print("[ADMIN] Enter client password: ");
-                    String clientPassword = scanner.nextLine();
-                    System.out.print("[ADMIN] Enter client first name: ");
-                    String clientFirstName = scanner.nextLine();
-                    System.out.print("[ADMIN] Enter client last name: ");
-                    String clientLastName = scanner.nextLine();
-                    admin.createClient(clientUsername, clientPassword, clientFirstName, clientLastName);
-
-                    System.out.println("[ADMIN] Client account created.");
+                    createNewClient();
                     ConsoleUtil.enter();
                     break;
 
                 case 3:
-                    // Delete a client account
-                    System.out.print("[ADMIN] Enter client username to delete: ");
-                    String deleteUsername = scanner.nextLine();
-                    System.out.print("Are you sure you want to delete client " + deleteUsername + "? (Y/n):");
-                    String confirm = scanner.nextLine();
-                    if (!confirm.equalsIgnoreCase("Y")) {
-                        System.out.println("[ADMIN] Client deletion cancelled.");
-                        break;
-                    }
-                    admin.deleteClient(deleteUsername);
-                    System.out.println("[ADMIN] Client account deleted.");
+                    deleteClient();
                     ConsoleUtil.enter();
                     break;
 
                 case 4:
-                    // Update a client account
-                    System.out.print("[ADMIN] Enter client username to update: ");
-                    String username = scanner.nextLine();
-                    ClientUser client = admin.getClient(username);
-                    if (client != null) {
-                        System.out.println(client.toString());
-                    } else {
-                        System.out.println("[ADMIN] Client not found.");
-                    }
-                    System.out.print("[ADMIN] Enter field to update, case-sensitive (username, password, firstName, lastName): ");
-                    String field = scanner.nextLine();
-                    UpdateField updateField;
-
-                    switch (field) {
-                        case "username":
-                            updateField = UpdateField.USERNAME;
-                            break;
-                        case "password":
-                            updateField = UpdateField.PASSWORD;
-                            break;
-                        case "firstName":
-                            updateField = UpdateField.FIRST_NAME;
-                            break;
-                        case "lastName":
-                            updateField = UpdateField.LAST_NAME;
-                            break;
-                        default:
-                            System.out.println("Invalid field.");
-                            return;
-                    }
-
-                    System.out.print("[ADMIN] Enter new value: ");
-                    String newValue = scanner.nextLine();
-
-                    admin.updateClientField(username, updateField, newValue);
-
-                    // Determine the newly updated client
-                    String queryUsername = (updateField == UpdateField.USERNAME) ? newValue : username;
-                    
-                    ClientUser updatedClient = admin.getClient(queryUsername);
-                    if (updatedClient != null) {
-                        System.out.println("[ADMIN] Client updated:");
-                        System.out.println(updatedClient.toString());
-                    } else {
-                        System.out.println("[ERROR] Could not retrieve information");
-                    }
-                                    
+                    updateClient();     
                     ConsoleUtil.enter();
                     break;
 
@@ -135,7 +62,96 @@ public class AdminView {
                 default:
                     break;
             }
+        }        
+    }
+
+    private void viewAllClients() {
+        // Case 1: View all client accounts
+        List<ClientUser> clients = admin.getAllClients();
+        if (clients != null) {
+            clients.forEach(System.out::println);
+        } else {
+            System.out.println("No clients found.");
         }
+    }
+
+    private void createNewClient() {
+        // Case 2: Create a new client account
+        System.out.print("[ADMIN] Enter client username: ");
+        String clientUsername = scanner.nextLine();
+        System.out.print("[ADMIN] Enter client password: ");
+        String clientPassword = scanner.nextLine();
+        System.out.print("[ADMIN] Enter client first name: ");
+        String clientFirstName = scanner.nextLine();
+        System.out.print("[ADMIN] Enter client last name: ");
+        String clientLastName = scanner.nextLine();
+        admin.createClient(clientUsername, clientPassword, clientFirstName, clientLastName);
+
+        System.out.println("[ADMIN] Client account created.");
+    }
+
+    private void deleteClient() {
+        // Case 3: Delete a client account
+        System.out.print("[ADMIN] Enter client username to delete: ");
+        String deleteUsername = scanner.nextLine();
+        System.out.print("Are you sure you want to delete client " + deleteUsername + "? (Y/n):");
+        String confirm = scanner.nextLine();
+        if (!confirm.equalsIgnoreCase("Y")) {
+            System.out.println("[ADMIN] Client deletion cancelled.");
+            return;
+        }
+        admin.deleteClient(deleteUsername);
+        System.out.println("[ADMIN] Client account deleted.");
+        ConsoleUtil.enter();
+    }
+
+    private void updateClient() {
+        // Case 4: Update a client account
+        System.out.print("[ADMIN] Enter client username to update: ");
+        String username = scanner.nextLine();
+        ClientUser client = admin.getClient(username);
+        if (client != null) {
+            System.out.println(client.toString());
+        } else {
+            System.out.println("[ADMIN] Client not found.");
+        }
+        System.out.print("[ADMIN] Enter field to update, case-sensitive (username, password, firstName, lastName): ");
+        String field = scanner.nextLine();
+        UpdateField updateField;
+
+        switch (field) {
+            case "username":
+                updateField = UpdateField.USERNAME;
+                break;
+            case "password":
+                updateField = UpdateField.PASSWORD;
+                break;
+            case "firstName":
+                updateField = UpdateField.FIRST_NAME;
+                break;
+            case "lastName":
+                updateField = UpdateField.LAST_NAME;
+                break;
+            default:
+                System.out.println("Invalid field.");
+                return;
+        }
+
+        System.out.print("[ADMIN] Enter new value: ");
+        String newValue = scanner.nextLine();
+
+        admin.updateClientField(username, updateField, newValue);
+
+        // Determine the newly updated client
+        String queryUsername = (updateField == UpdateField.USERNAME) ? newValue : username;
         
+        ClientUser updatedClient = admin.getClient(queryUsername);
+        if (updatedClient != null) {
+            System.out.println("[ADMIN] Client updated:");
+            System.out.println(updatedClient.toString());
+        } else {
+            System.out.println("[ERROR] Could not retrieve information");
+        }
+                               
     }
 }

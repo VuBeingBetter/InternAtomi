@@ -18,5 +18,4 @@ public interface UserDAO {
     // Login are pushed to Admin and Client separately 
     public User login (String username, String password);
 
-    public void register (User user);
 }

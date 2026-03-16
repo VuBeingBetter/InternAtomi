@@ -21,8 +21,7 @@ public class ClientView {
         boolean isRunning = true;
         while (isRunning) {
             ConsoleUtil.clearConsole();
-            System.out.println(String.format("--- CLIENT DASHBOARD: %s ---", client.getUsername()));
-            System.out.println("--- CLIENT MENU ---");
+            System.out.println(String.format("=== CLIENT DASHBOARD: %s ===", client.getUsername()));
             System.out.println("1. View profile");
             System.out.println("2. Update profile");
             System.out.println("0. Logout");
