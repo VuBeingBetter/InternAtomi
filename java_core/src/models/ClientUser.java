@@ -9,4 +9,8 @@ public class ClientUser extends User {
         super(_id, username, password, firstName, lastName, UserRole.CLIENT);
     }
 
+    public ClientUser(String id, String username, String password, String firstName, String lastName, UserRole role) {
+        super(id, username, password, firstName, lastName, role);
+    }
+
 }

@@ -1,21 +1,21 @@
 package dao;
 
-import models.ClientUser;
-import models.UpdateField;
 import models.User;
-import models.UserRole;
 
-public interface UserDAO {
+public interface UserDAO <T extends User>{
+    // Use generic to separate Client and Admin
+    public T login (String username, String password, Class<T> type);
 
-    public void createClient(ClientUser clientUser);
+    public void createUser(User user);
     
-    public User getUserByUsername(String username, UserRole role);
+    public T getUserByUsername(String username, Class<T> type);
 
-    public boolean isUserExist(String username, UserRole role);
+    public boolean existsByUsername(String username);
 
-    public void updateSpecificField(String username, UpdateField field, String newValue);
+    public boolean updateProfile(String username, T newUserInfo);
 
-    // Login are pushed to Admin and Client separately 
-    public User login (String username, String password);
+    public boolean updateUsername(String username, String newUsername);
 
+    public boolean updatePassword(String username, String newPassword);
+    
 }

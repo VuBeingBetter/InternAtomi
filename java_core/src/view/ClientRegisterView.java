@@ -5,8 +5,8 @@ import java.util.Scanner;
 import dao.ClientDAO;
 import dao.implement.ClientDAOImpl;
 import models.ClientUser;
-import models.UserRole;
 import util.ConsoleUtil;
+import util.PasswordUtil;
 
 public class ClientRegisterView {
     // Client Register View
@@ -25,11 +25,16 @@ public class ClientRegisterView {
         System.out.print("[SYSTEM] Enter last name: ");
         String lastName = scanner.nextLine();
 
-        if (!clientDAO.isUserExist(username, UserRole.CLIENT)) {
-            // SHA256 Encoding
-            password = ConsoleUtil.sha256Encoding(password);
+        if (!clientDAO.existsByUsername(username)) {
+            while (!PasswordUtil.isValidPassword(password)) {
+                System.out.println("[SYSTEM] Password must be at least 8 characters long.");
+                System.out.print("[SYSTEM] Enter password: ");
+                password = scanner.nextLine();
+            }
 
-            clientDAO.createClient(new ClientUser(username, password, firstName, lastName));
+            password = PasswordUtil.hashPassword(password);
+            clientDAO.register(new ClientUser(username, password, firstName, lastName));
+
             System.out.println("[SYSTEM] Client account created.");
             ConsoleUtil.enter();
         } else {

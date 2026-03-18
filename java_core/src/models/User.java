@@ -27,6 +27,15 @@ public abstract class User {
         this.role = role;
     }
 
+    public User(String _id, String username, String password, String firstName, String lastName) {
+        // Khi get user từ database, phải truyền lại _id nếu không constructor trên sẽ tự gen 1 _id mới
+        this._id = _id;
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }

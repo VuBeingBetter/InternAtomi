@@ -3,14 +3,18 @@ package view;
 import java.util.List;
 import java.util.Scanner;
 
+import dao.AdminDAO;
+import dao.implement.AdminDAOImpl;
 import models.AdminUser;
 import models.ClientUser;
-import models.UpdateField;
 import util.ConsoleUtil;
+import util.PasswordUtil;
 
 public class AdminView {
+    private static AdminDAO adminDAO = new AdminDAOImpl();
+    private static Scanner scanner = new Scanner(System.in);
+
     private AdminUser admin;
-    private Scanner scanner = new Scanner(System.in);
 
     public AdminView (AdminUser admin) {
         this.admin = admin;
@@ -49,7 +53,7 @@ public class AdminView {
                     break;
 
                 case 4:
-                    updateClient();     
+                    updateClientProfile();     
                     ConsoleUtil.enter();
                     break;
 
@@ -67,7 +71,7 @@ public class AdminView {
 
     private void viewAllClients() {
         // Case 1: View all client accounts
-        List<ClientUser> clients = admin.getAllClients();
+        List<ClientUser> clients = adminDAO.getAllClients();
         if (clients != null) {
             clients.forEach(System.out::println);
         } else {
@@ -85,7 +89,8 @@ public class AdminView {
         String clientFirstName = scanner.nextLine();
         System.out.print("[ADMIN] Enter client last name: ");
         String clientLastName = scanner.nextLine();
-        admin.createClient(clientUsername, clientPassword, clientFirstName, clientLastName);
+
+        adminDAO.createClient(new ClientUser(clientUsername, clientPassword, clientFirstName, clientLastName));
 
         System.out.println("[ADMIN] Client account created.");
     }
@@ -94,63 +99,66 @@ public class AdminView {
         // Case 3: Delete a client account
         System.out.print("[ADMIN] Enter client username to delete: ");
         String deleteUsername = scanner.nextLine();
+
+        if (!adminDAO.existsByUsername(deleteUsername)) {
+            System.out.println("[ADMIN] Client not found.");
+            return;
+        }
+
         System.out.print("Are you sure you want to delete client " + deleteUsername + "? (Y/n):");
         String confirm = scanner.nextLine();
         if (!confirm.equalsIgnoreCase("Y")) {
             System.out.println("[ADMIN] Client deletion cancelled.");
             return;
         }
-        admin.deleteClient(deleteUsername);
-        System.out.println("[ADMIN] Client account deleted.");
-        ConsoleUtil.enter();
+
+        if (adminDAO.deleteClientByUsername(deleteUsername)) {
+            System.out.println("[ADMIN] Client account deleted.");
+        } else {
+            System.out.println("[ADMIN] Cannot delete client account.");
+        }
     }
 
-    private void updateClient() {
+    private void updateClientProfile() {
         // Case 4: Update a client account
         System.out.print("[ADMIN] Enter client username to update: ");
         String username = scanner.nextLine();
-        ClientUser client = admin.getClient(username);
-        if (client != null) {
-            System.out.println(client.toString());
-        } else {
+
+        if (!adminDAO.existsByUsername(username)) {
             System.out.println("[ADMIN] Client not found.");
-        }
-        System.out.print("[ADMIN] Enter field to update, case-sensitive (username, password, firstName, lastName): ");
-        String field = scanner.nextLine();
-        UpdateField updateField;
-
-        switch (field) {
-            case "username":
-                updateField = UpdateField.USERNAME;
-                break;
-            case "password":
-                updateField = UpdateField.PASSWORD;
-                break;
-            case "firstName":
-                updateField = UpdateField.FIRST_NAME;
-                break;
-            case "lastName":
-                updateField = UpdateField.LAST_NAME;
-                break;
-            default:
-                System.out.println("Invalid field.");
-                return;
+            return;
         }
 
-        System.out.print("[ADMIN] Enter new value: ");
-        String newValue = scanner.nextLine();
+        ClientUser client = adminDAO.getClientByUsername(username);
+        System.out.println("--- PROFILE UPDATE (leave the field blank if keep) ---");
 
-        admin.updateClientField(username, updateField, newValue);
+        System.out.print("[ADMIN] First Name [" + client.getFirstName() + "]: ");
+        String firstName = scanner.nextLine();
+        if (!firstName.isBlank()) client.setFirstName(firstName);
 
-        // Determine the newly updated client
-        String queryUsername = (updateField == UpdateField.USERNAME) ? newValue : username;
-        
-        ClientUser updatedClient = admin.getClient(queryUsername);
-        if (updatedClient != null) {
-            System.out.println("[ADMIN] Client updated:");
-            System.out.println(updatedClient.toString());
+        System.out.print("[ADMIN] Last Name [" + client.getLastName() + "]: ");
+        String lastName = scanner.nextLine();
+        if (!lastName.isBlank()) client.setLastName(lastName);
+
+        // Admin can change password of client
+        System.out.print("[ADMIN] Enter old password: ");
+        String oldPassword = scanner.nextLine();
+        if (!PasswordUtil.verifyPassword(oldPassword, client.getPassword())) {
+            System.out.println("[ADMIN] Old password is incorrect.");
+            return;
+        }
+        System.out.print("[ADMIN] Enter new password: ");
+        String newPassword = scanner.nextLine();
+        if (!PasswordUtil.isValidPassword(newPassword)) {
+            System.out.println("[ADMIN] Invalid password. Password not changed.");
+        }
+        else client.setPassword(PasswordUtil.hashPassword(newPassword));
+
+        boolean success = adminDAO.updateClientProfile(username, client); 
+        if (success) {
+            System.out.println("[ADMIN] Client profile updated.");
         } else {
-            System.out.println("[ERROR] Could not retrieve information");
+            System.out.println("[ADMIN] Cannot update client profile!");
         }
                                
     }

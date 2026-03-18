@@ -16,12 +16,11 @@ public class ClientLoginView extends LoginView {
     public void displayClientLoginView() {
         ConsoleUtil.clearConsole();
         System.out.println("=== CLIENT LOGIN ===");
-        LoginView loginView = new LoginView();
-        Map.Entry<String, String> credentials = loginView.displayLoginView();
+        Map.Entry<String, String> credentials = super.displayLoginView();
         String username = credentials.getKey();
         String password = credentials.getValue();
 
-        ClientUser client = (ClientUser)clientDAO.login(username, password);
+        ClientUser client = clientDAO.login(username, password, ClientUser.class);
 
         if (client != null) {
             System.out.println("[SYSTEM] Login successful...");
@@ -32,5 +31,6 @@ public class ClientLoginView extends LoginView {
             System.out.println("[SYSTEM] Login failed. Invalid username or password.");
         }
 
+        ConsoleUtil.enter();
     }
 }

@@ -2,21 +2,12 @@ package dao.implement;
 
 import dao.ClientDAO;
 import models.ClientUser;
-import models.UpdateField;
-import models.UserRole;
 
-public class ClientDAOImpl extends UserDAOImpl implements ClientDAO {
+public class ClientDAOImpl extends UserDAOImpl<ClientUser> implements ClientDAO {
 
     @Override
-    public ClientUser getClientByUsername(String username) {
-        return (ClientUser) getUserByUsername(username, UserRole.CLIENT);
-    }
-
-    @Override
-    public void updateInfo(String username, UpdateField field, String newValue) {
-        this.updateSpecificField(username, field, newValue);
-        System.out.println("Client information updated successfully.");
-        System.out.println(getClientByUsername(username).toString());
+    public void register(ClientUser client) {
+        super.createUser(client);
     }
     
 }

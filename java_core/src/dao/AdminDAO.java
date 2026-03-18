@@ -2,19 +2,19 @@ package dao;
 
 import java.util.List;
 
+import models.AdminUser;
 import models.ClientUser;
-import models.UpdateField;
 
-public interface AdminDAO extends UserDAO {
+public interface AdminDAO extends UserDAO<AdminUser> {
 
-    public boolean isClientExist(String clientUsername);
-
-    public ClientUser getClient (String clientUsername);
+    public ClientUser getClientByUsername(String clientUsername);
 
     public List<ClientUser> getAllClients();
 
-    public boolean deleteClientByUsername(String clientUsername);
+    public void createClient(ClientUser client);
 
-    public void updateClientInfo(String clientUsername, UpdateField field, String newValue);
+    public boolean updateClientProfile(String clientUsername, ClientUser newClientInfo);
+
+    public boolean deleteClientByUsername(String clientUsername);
 
 }

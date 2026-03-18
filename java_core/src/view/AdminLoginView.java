@@ -20,7 +20,7 @@ public class AdminLoginView extends LoginView {
         String username = credentials.getKey();
         String password = credentials.getValue();
 
-        AdminUser admin = (AdminUser) adminDAO.login(username, password);
+        AdminUser admin = adminDAO.login(username, password, AdminUser.class);
 
         if (admin != null) {
             System.out.println("[SYSTEM] Login successful...");
@@ -31,5 +31,6 @@ public class AdminLoginView extends LoginView {
             System.out.println("[SYSTEM] Login failed. Invalid username or password.");
         }
         
+        ConsoleUtil.enter();
     }
 }
